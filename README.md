@@ -2,6 +2,8 @@
 
 This project is a React Native app built with Expo, featuring two tabs: GPS and QR Scanner.
 
+![Expo.dev QR Code](screenshots/QR.jpg)
+
 ## Features
 
 - Display your current location on a map with GPS coordinates and address details.
