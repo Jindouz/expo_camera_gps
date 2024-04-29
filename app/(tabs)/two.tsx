@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Camera } from 'expo-camera';
-import { Button, ImageBackground, Text, TouchableOpacity, View, Dimensions, Linking } from 'react-native';
+import { Button, ImageBackground, Text, TouchableOpacity, View, Dimensions, Linking, PanResponder } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Alert } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -14,6 +14,17 @@ export default function TabTwoScreen() {
   const [hasScanned, setHasScanned] = useState(false);
 
   const isFocused = useIsFocused();
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return Math.abs(gestureState.dy) > 50; // Swipe speed
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        setType(prevType => prevType === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back);
+      },
+    })
+  ).current;
 
   useEffect(() => {
     (async () => {
@@ -118,6 +129,8 @@ export default function TabTwoScreen() {
     Linking.openURL(url).catch((err) => console.error('An error occurred', err));
   };
 
+
+
   return (
     <Camera
       style={{ flex: 1 }}
@@ -125,6 +138,7 @@ export default function TabTwoScreen() {
       ref={cameraRef}
       ratio={cameraRatio}
       onBarCodeScanned={handleBarCodeScanned}
+      {...panResponder.panHandlers}
     >
       <View
         style={{
